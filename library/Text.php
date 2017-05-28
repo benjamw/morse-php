@@ -76,7 +76,10 @@ class Text {
      * @return string
      */
     public function toMorse($text) {
-        $text = strtoupper($text);
+        if (!$this->is_case_sense) {
+            $text = strtolower($text);
+        }
+
         $words = preg_split('#\s+#', $text);
         $morse = array_map([$this, 'morseWord'], $words);
         return implode($this->wordSeparator, $morse);
@@ -136,13 +139,18 @@ class Text {
      * @return string
      */
     private function morseCharacter($char) {
-        if (!isset($this->table[$char])) {
-            return $this->invalidCharacterReplacement;
-        }
+        if ($this->is_case_sense && preg_match('/^[A-ZА-ЯЁ]$/', $char)) {
+            $char = strtolower($char);
+            if (!isset($this->table[$char])) {
+                return $this->invalidCharacterReplacement;
+            }
 
-        if ($is_case_sense && preg_match('/A-ZА-ЯЁ/', $char)) {
             return $this->table->getMorse($this->upperCaseModificator).' '.$this->table->getMorse($char);
         } else {
+            if (!isset($this->table[$char])) {
+                return $this->invalidCharacterReplacement;
+            }
+
             return $this->table->getMorse($char);
         }
     }
