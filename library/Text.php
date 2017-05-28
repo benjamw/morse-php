@@ -29,12 +29,19 @@ class Text {
      *
      * @var string
      */
-    protected $wordSeparator = '  ';
+    protected $wordSeparator = ' ';
+
+    protected $upperCaseModificator = '+';
+
+    private $is_case_sense = false;
+
+    private $upperMod = false;
 
     /**
      * @param array $table Optional morse code table to use
      */
-    public function __construct($table = null) {
+    public function __construct($table = null, $is_case_sense = false) {
+        $this->is_case_sense = $is_case_sense;
         $this->table = $table ? $table : new Table();
     }
 
@@ -133,7 +140,11 @@ class Text {
             return $this->invalidCharacterReplacement;
         }
 
-        return $this->table->getMorse($char);
+        if ($is_case_sense && preg_match('/A-ZА-ЯЁ/', $char)) {
+            return $this->table->getMorse($this->upperCaseModificator).' '.$this->table->getMorse($char);
+        } else {
+            return $this->table->getMorse($char);
+        }
     }
 
     /**

@@ -30,32 +30,32 @@ class Table implements \ArrayAccess {
      * @var array
      */
     private $table = [
-        'A' => '01',
-        'B' => '1000',
-        'C' => '1010',
-        'D' => '100',
-        'E' => '0',
-        'F' => '0010',
-        'G' => '110',
-        'H' => '0000',
-        'I' => '00',
-        'J' => '0111',
-        'K' => '101',
-        'L' => '0100',
-        'M' => '11',
-        'N' => '10',
-        'O' => '111',
-        'P' => '0110',
-        'Q' => '1101',
-        'R' => '010',
-        'S' => '000',
-        'T' => '1',
-        'U' => '001',
-        'V' => '0001',
-        'W' => '011',
-        'X' => '1001',
-        'Y' => '1011',
-        'Z' => '1100',
+        'a' => '01',
+        'b' => '1000',
+        'c' => '1010',
+        'd' => '100',
+        'e' => '0',
+        'f' => '0010',
+        'g' => '110',
+        'h' => '0000',
+        'i' => '00',
+        'j' => '0111',
+        'k' => '101',
+        'l' => '0100',
+        'm' => '11',
+        'n' => '10',
+        'o' => '111',
+        'p' => '0110',
+        'q' => '1101',
+        'r' => '010',
+        's' => '000',
+        't' => '1',
+        'u' => '001',
+        'v' => '0001',
+        'w' => '011',
+        'x' => '1001',
+        'y' => '1011',
+        'z' => '1100',
 
         '0' => '11111',
         '1' => '01111',
@@ -79,7 +79,7 @@ class Table implements \ArrayAccess {
         '&' => '01000',
         ':' => '111000',
         ';' => '101010',
-        '=' => '10001',
+        ' ' => '10001',
         '+' => '01010',
         '-' => '100001',
         '_' => '001101',
@@ -88,10 +88,13 @@ class Table implements \ArrayAccess {
         '@' => '011010',
     ];
 
+    private $dash = '-';
+
     /**
      * Constructs a new instance of the table
      */
-    public function __construct() {
+    public function __construct($dash_char = '-') {
+        $this->dash = $dash_char;
         $this->predefinedCodes = array_keys($this->table);
         $this->reversedTable = array_flip($this->table);
     }
@@ -155,7 +158,7 @@ class Table implements \ArrayAccess {
      * @return string
      */
     public function getMorse($character) {
-        return strtr($this->offsetGet($character), '01', '.-');
+        return strtr($this->offsetGet($character), '01', '.'.$this->dash);
     }
 
     /**
@@ -165,7 +168,7 @@ class Table implements \ArrayAccess {
      * @return string
      */
     public function getCharacter($morse) {
-        $key = strtr($morse, '.-', '01');
+        $key = strtr($morse, '.'.$this->dash, '01');
         return isset($this->reversedTable[$key]) ? $this->reversedTable[$key] : false;
     }
 }
