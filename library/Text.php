@@ -29,7 +29,7 @@ class Text {
      *
      * @var string
      */
-    protected $wordSeparator = ' ';
+    protected $wordSeparator = '  ';
 
     protected $upperCaseModificator = '+';
 
@@ -99,6 +99,30 @@ class Text {
     }
 
     /**
+     * Translate lowercase with modifers to upper
+     *
+     * @param array $characters
+     * @return array
+    */
+    private function toUppercase($characters) {
+        $cnt = count($characters);
+        $result = array();
+        $i = 0;
+        while($i < $cnt) {
+            $char = $characters[$i];
+            if ($char == $this->upperCaseModificator) {
+                $i++;
+                $result[] = mb_strtoupper($characters[$i]);
+            } else {
+                $result[] = $char;
+            }
+
+            $i++;
+        }
+        return $result;
+    }
+
+    /**
      * Translate a "morse word" to text
      *
      * @param string $morse
@@ -107,6 +131,10 @@ class Text {
     private function translateMorseWord($morse) {
         $morseChars = explode(' ', $morse);
         $characters = array_map([$this, 'translateMorseCharacter'], $morseChars);
+        if ($this->is_case_sense) {
+            $characters = $this->toUppercase($characters);
+        }
+
         return implode('', $characters);
     }
 
