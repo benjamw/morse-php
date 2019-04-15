@@ -107,7 +107,7 @@ class TextTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($expect, $token);
     }
 
-    public function testOldSignalToText() {
+    public function testUpperSignalToText() {
         $signal = '.:::: .:.:. ..:. ..::: .... .:.:. .:: .:.:. .: .::. .:.:. ::. .. .:.:. ..: .:.:. ..: .:.:. :..: ... ::::. :::.. .:.:. :.. ...: .:.:. ::: .:.:. ::.: ::::. .:.:. :..: ::.: .:.:. ...: .:.:. :.:: ..:. ...: .: ::.: .:.:. ::.: .:.:. ... .:.:. ..: ::::: :: .:.:. .:. .:.:. ... ::. .:.:. ::: .:.:. .: :. ::... : :::.. .:.:. ... .:. ..:. .:.:. .::: .:::: :.:. .:.:. :..';
         $expect = '1F2hWApGiUUXs98DvOQ9XqVYfvaqQSU0mRSgOAn7t8SrfJ1cD';
 
@@ -117,4 +117,15 @@ class TextTest extends \PHPUnit_Framework_TestCase {
         $token = $text->fromMorse($signal);
         $this->assertSame($expect, $token);
     }
+
+    public function testUpperTextToSignal() {
+        $str = '1F2hWApGiUUXs98DvOQ9XqVYfvaqQSU0mRSgOAn7t8SrfJ1cD';
+        $expect = '.:::: .:.:. ..:. ..::: .... .:.:. .:: .:.:. .: .::. .:.:. ::. .. .:.:. ..: .:.:. ..: .:.:. :..: ... ::::. :::.. .:.:. :.. ...: .:.:. ::: .:.:. ::.: ::::. .:.:. :..: ::.: .:.:. ...: .:.:. :.:: ..:. ...: .: ::.: .:.:. ::.: .:.:. ... .:.:. ..: ::::: :: .:.:. .:. .:.:. ... ::. .:.:. ::: .:.:. .: :. ::... : :::.. .:.:. ... .:. ..:. .:.:. .::: .:::: :.:. .:.:. :..';
+        $table = new Table(':');
+        $text = new Text($table);
+        $text->setCaseSense(true);
+        $signal = $text->toMorse($str);
+        $this->assertSame($expect, $signal);
+    }
+
 }

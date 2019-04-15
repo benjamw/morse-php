@@ -145,7 +145,7 @@ class Text {
                 $i++;
                 $result[] = mb_strtolower($characters[$i]);
             } else {
-                $result[] = $char;
+                $result[] = mb_strtoupper($char);
             }
 
             $i++;
@@ -194,13 +194,17 @@ class Text {
         return implode(' ', $morse);
     }
 
-    private function getMorseCaseModifer($mod) {
+    private function getMorseCaseModiferCharacter($char, $is_lower, $is_letter) {
+        if (!$is_letter || ($this->upperMod && $is_lower) || (!$this->upperMod && !$is_lower)) {
+            return $this->table->getMorse($char);
+        }
+
         $modifer = $this->lowerCaseModificator;
-        if ($mod) {
+        if ($this->upperMod) {
             $modifer = $this->upperCaseModificator;
         }
 
-        return $this->table->getMorse($modifer);
+        return $this->table->getMorse($modifer).' '.$this->table->getMorse($char);
     }
 
     /**
@@ -210,13 +214,22 @@ class Text {
      * @return string
      */
     private function morseCharacter($char) {
-        if ($this->is_case_sense && preg_match('/^[a-zа-яё]$/', $char)) {
-            $char = strtoupper($char);
+        if ($this->is_case_sense) {
+            $is_lower = false;
+            $is_letter = false;
+            if (preg_match('/^[a-zа-яё]$/', $char)) {
+                $char = strtoupper($char);
+                $is_lower = true;
+                $is_letter = true;
+            } else if (preg_match('/^[A-ZА-ЯЁ]$/', $char)) {
+                $is_letter = true;
+            }
+
             if (!isset($this->table[$char])) {
                 return $this->invalidCharacterReplacement;
             }
 
-            return $this->getMorseCaseModifer($this->upperMod).' '.$this->table->getMorse($char);
+            return $this->getMorseCaseModiferCharacter($char, $is_lower, $is_letter);
         } else {
             if (!isset($this->table[$char])) {
                 return $this->invalidCharacterReplacement;
