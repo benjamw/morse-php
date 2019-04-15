@@ -31,11 +31,9 @@ class WavTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('audio/x-wav', $mime);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Speed must be numeric
-     */
     public function testThrowsIfInvalidCwSpeedSet() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Speed must be numeric');
         (new Wav())->setCwSpeed('foo');
     }
 
@@ -49,11 +47,9 @@ class WavTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('audio/x-wav', $mime);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Sample rate must be numeric
-     */
     public function testThrowsIfInvalidSampleRateSet() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Sample rate must be numeric');
         (new Wav())->setSampleRate('foo');
     }
 
@@ -67,11 +63,9 @@ class WavTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('audio/x-wav', $mime);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Frequency must be numeric
-     */
     public function testThrowsIfInvalidFrequencySet() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Frequency must be numeric');
         (new Wav())->setFrequency('foo');
     }
 

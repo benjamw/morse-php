@@ -1,6 +1,7 @@
 {
-    "name": "rexxars/morse",
-    "description": "Generate morse code (text and/or wav-audio)",
+    "name": "skillcoder/morse",
+    "version": "1.0.0",
+    "description": "Generate morse code (text and/or wav-audio) (Support caseSense)",
     "type": "library",
     "license": "MIT",
     "authors": [

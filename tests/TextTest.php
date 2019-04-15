@@ -83,4 +83,38 @@ class TextTest extends \PHPUnit_Framework_TestCase {
             $text->fromMorse($text->toMorse('Avslag -30%'))
         );
     }
+
+    public function testTextToSignal() {
+        $str = '1F2hWApGiUUXs98DvOQ9XqVYfvaqQSU0mRSgOAn7t8SrfJ1cD';
+        $expect = '.:::: ..:. ..::: .:... .... .:: .: .:... .::. ::. .:... .. ..: ..: :..: .:... ... ::::. :::.. :.. .:... ...: ::: ::.: ::::. :..: .:... ::.: ...: :.:: .:... ..:. .:... ...: .:... .: .:... ::.: ::.: ... ..: ::::: .:... :: .:. ... .:... ::. ::: .: .:... :. ::... .:... : :::.. ... .:... .:. .:... ..:. .::: .:::: .:... :.:. :..';
+        $table = new Table(':');
+        $text = new Text($table);
+        $text->setCaseSense(true);
+        $text->setUpperCaseMod(false);
+        $signal = $text->toMorse($str);
+        $this->assertSame($expect, $signal);
+    }
+
+    public function testSignalToText() {
+        $signal = '.:::: ..:. ..::: .:... .... .:: .: .:... .::. ::. .:... .. ..: ..: :..: .:... ... ::::. :::.. :.. .:... ...: ::: ::.: ::::. :..: .:... ::.: ...: :.:: .:... ..:. .:... ...: .:... .: .:... ::.: ::.: ... ..: ::::: .:... :: .:. ... .:... ::. ::: .: .:... :. ::... .:... : :::.. ... .:... .:. .:... ..:. .::: .:::: .:... :.:. :..';
+        $expect = '1F2hWApGiUUXs98DvOQ9XqVYfvaqQSU0mRSgOAn7t8SrfJ1cD';
+
+        $table = new Table(':');
+        $text = new Text($table);
+        $text->setCaseSense(true);
+        $text->setUpperCaseMod(false);
+        $token = $text->fromMorse($signal);
+        $this->assertSame($expect, $token);
+    }
+
+    public function testOldSignalToText() {
+        $signal = '.:::: .:.:. ..:. ..::: .... .:.:. .:: .:.:. .: .::. .:.:. ::. .. .:.:. ..: .:.:. ..: .:.:. :..: ... ::::. :::.. .:.:. :.. ...: .:.:. ::: .:.:. ::.: ::::. .:.:. :..: ::.: .:.:. ...: .:.:. :.:: ..:. ...: .: ::.: .:.:. ::.: .:.:. ... .:.:. ..: ::::: :: .:.:. .:. .:.:. ... ::. .:.:. ::: .:.:. .: :. ::... : :::.. .:.:. ... .:. ..:. .:.:. .::: .:::: :.:. .:.:. :..';
+        $expect = '1F2hWApGiUUXs98DvOQ9XqVYfvaqQSU0mRSgOAn7t8SrfJ1cD';
+
+        $table = new Table(':');
+        $text = new Text($table);
+        $text->setCaseSense(true);
+        $token = $text->fromMorse($signal);
+        $this->assertSame($expect, $token);
+    }
 }

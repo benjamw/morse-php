@@ -30,32 +30,32 @@ class Table implements \ArrayAccess {
      * @var array
      */
     private $table = [
-        'a' => '01',
-        'b' => '1000',
-        'c' => '1010',
-        'd' => '100',
-        'e' => '0',
-        'f' => '0010',
-        'g' => '110',
-        'h' => '0000',
-        'i' => '00',
-        'j' => '0111',
-        'k' => '101',
-        'l' => '0100',
-        'm' => '11',
-        'n' => '10',
-        'o' => '111',
-        'p' => '0110',
-        'q' => '1101',
-        'r' => '010',
-        's' => '000',
-        't' => '1',
-        'u' => '001',
-        'v' => '0001',
-        'w' => '011',
-        'x' => '1001',
-        'y' => '1011',
-        'z' => '1100',
+        'A' => '01',
+        'B' => '1000',
+        'C' => '1010',
+        'D' => '100',
+        'E' => '0',
+        'F' => '0010',
+        'G' => '110',
+        'H' => '0000',
+        'I' => '00',
+        'J' => '0111',
+        'K' => '101',    // Ready to Receive (Over)
+        'L' => '0100',
+        'M' => '11',
+        'N' => '10',
+        'O' => '111',
+        'P' => '0110',
+        'Q' => '1101',
+        'R' => '010',    // Message Received
+        'S' => '000',
+        'T' => '1',
+        'U' => '001',
+        'V' => '0001',
+        'W' => '011',
+        'X' => '1001',
+        'Y' => '1011',
+        'Z' => '1100',
 
         '0' => '11111',
         '1' => '01111',
@@ -68,24 +68,33 @@ class Table implements \ArrayAccess {
         '8' => '11100',
         '9' => '11110',
 
-        '.' => '010101',
-        ',' => '110011',
-        '?' => '001100',
-        "'" => '011110',
-        '!' => '101011',
-        '/' => '10010',
-        '(' => '10110',
-        ')' => '101101',
-        '&' => '01000',
-        ':' => '111000',
-        ';' => '101010',
-        ' ' => '10001',
-        '+' => '01010',
-        '-' => '100001',
-        '_' => '001101',
-        '"' => '010010',
+        // https://en.wikipedia.org/wiki/Morse_code_mnemonics
+        // From: A contemporary Morse code chart: https://en.wikipedia.org/wiki/Morse_code_mnemonics#/media/File:Morse_Crib_Sheet.png
+        // * - mark non standart symbol
+        '.' => '010101', // Full stop
+        ',' => '110011', // Comma
+        '?' => '001100', // Interrogation mark
+        "'" => '011110', // Apostrophe
+        '!' => '101011', // 
+        '/' => '10010',  // Fraction Bar (Division Sign)
+        '(' => '10110',  // 
+        ')' => '101101', // Brackets [()] (transmited before and after the word or words affected)
+        '&' => '01000',  // Interval (Wait)
+        ':' => '111000', // Colon
+        ';' => '101010', // 
+        '=' => '10001',  // Break || Double dash (=)
+        '+' => '01010',  // * End of message
+        '-' => '100001', // Hyphen || Dash
+        '_' => '001101', // Underline (transmited before and after the word or words affected)
+        '"' => '010010', // Quotation mark
         '$' => '0001001',
         '@' => '011010',
+        '|' => '01001',  // * Separation Sign (between whole number and fraction)
+        // '' => '00010',        // * Roger
+        // '' => '10101',        // * Starting signal
+        // '' => '000101',       // * Closing down (End ok)
+        // chr(8) => '00000000', // * Erase || Error
+        // 'SOS' => '000111000', // * Distress Call || SOS
     ];
 
     private $dash = '-';

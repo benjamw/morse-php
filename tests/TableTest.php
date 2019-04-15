@@ -22,29 +22,23 @@ class TableTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('10000001', $table['%']);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Can't override predefined character
-     */
     public function testCantOverwritePredefinedCharacters() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Can't override predefined character");
         $table = new Table();
         $table['A'] = '101';
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Value must be a string of zeroes and ones (0/1)
-     */
     public function testCantUseNonMorseCharactersAsValueForCustomCharacter() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Value must be a string of zeroes and ones (0/1)');
         $table = new Table();
         $table['¤'] = '123';
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage There is already a character with value 1
-     */
     public function testCantUseSameMorseCodeAsOtherCharacter() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('There is already a character with value 1');
         $table = new Table();
         $table['¤'] = '1';
     }
@@ -58,11 +52,9 @@ class TableTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame(false, isset($table['%']));
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Can't unset a predefined morse code
-     */
     public function testCantUnsetPredefinedCharacters() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Can't unset a predefined morse code");
         $table = new Table();
         unset($table['A']);
     }
