@@ -7,7 +7,7 @@ namespace Morse;
  * @author Espen Hovlandsdal <espen@hovlandsdal.com>
  * @copyright Copyright (c) Espen Hovlandsdal
  * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/rexxars/morse-php
+ * @link https://github.com/benjamw/morse-php
  */
 class Text {
     /**
@@ -83,6 +83,10 @@ class Text {
      * @return string
      */
     public function toMorse($text) {
+        if ('' === $text) {
+            return '';
+        }
+
         if (!$this->is_case_sense) {
             $text = strtoupper($text);
         }
@@ -252,6 +256,6 @@ class Text {
             $str,
             -1,
             PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
-        );
+        ) ?: [''];
     }
 }

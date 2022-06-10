@@ -10,7 +10,7 @@ use Exception;
  * @author Walt Fair Jr
  * @author Espen Hovlandsdal <espen@hovlandsdal.com>
  * @license http://www.codeproject.com/info/cpol10.aspx The Code Project Open License (CPOL) 1.02
- * @link https://github.com/rexxars/morse-php
+ * @link https://github.com/benjamw/morse-php
  */
 class Wav {
     const DIT = '.';
