@@ -21,7 +21,10 @@ class WavTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('audio/x-wav', $mime);
     }
 
-    public function testCanSetCwSpeed() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testCanSetCwSpeed() {
         $wav = (new Wav())->setCwSpeed(10);
         $output = $wav->generate('Espen');
 
@@ -31,13 +34,19 @@ class WavTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('audio/x-wav', $mime);
     }
 
-    public function testThrowsIfInvalidCwSpeedSet() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testThrowsIfInvalidCwSpeedSet() {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Speed must be numeric');
         (new Wav())->setCwSpeed('foo');
     }
 
-    public function testCanSetSampleRate() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testCanSetSampleRate() {
         $wav = (new Wav())->setSampleRate(8000);
         $output = $wav->generate('Espen');
 
@@ -47,13 +56,19 @@ class WavTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('audio/x-wav', $mime);
     }
 
-    public function testThrowsIfInvalidSampleRateSet() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testThrowsIfInvalidSampleRateSet() {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Sample rate must be numeric');
         (new Wav())->setSampleRate('foo');
     }
 
-    public function testCanSetFrequency() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testCanSetFrequency() {
         $wav = (new Wav())->setFrequency(8000);
         $output = $wav->generate('Espen');
 
@@ -63,13 +78,19 @@ class WavTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('audio/x-wav', $mime);
     }
 
-    public function testThrowsIfInvalidFrequencySet() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testThrowsIfInvalidFrequencySet() {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Frequency must be numeric');
         (new Wav())->setFrequency('foo');
     }
 
-    public function testCanGenerateLongerValidWav() {
+	/**
+	 * @throws \Exception
+	 */
+	public function testCanGenerateLongerValidWav() {
         $wav = new Wav();
         $output = $wav->setFrequency(100)->generate($this->getLoremIpsum());
 

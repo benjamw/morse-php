@@ -1,6 +1,8 @@
 <?php
 namespace Morse;
 
+use Exception;
+
 /**
  * Based on code from the "Morse Code Generation from Text" article on CodeProject -
  * http://www.codeproject.com/Articles/85339/Morse-Code-Generation-from-Text
@@ -16,7 +18,7 @@ class Wav {
     const SPC = '/';
 
     protected $sampleRate = 11050;
-    protected $twopi = 6.283185307;
+    protected $tau = 6.283185307;
     protected $cwSpeed = 30;
     protected $frequency = 700;
     protected $data = null;
@@ -27,31 +29,50 @@ class Wav {
 
     private $bytes = [];
 
-    public function __construct($table = null) {
-        $this->timingCodes = $table ? $table : new Table();
+	/**
+	 * @var float
+	 */
+	private $toneTime;
+
+	/**
+	 * @var float
+	 */
+	private $sampleDt;
+
+	public function __construct($table = null) {
+        $this->timingCodes = $table ?: new Table();
     }
 
-    public function setCwSpeed($speed) {
+	/**
+	 * @throws Exception
+	 */
+	public function setCwSpeed($speed) {
         if (!is_numeric($speed)) {
-            throw new \Exception('$Speed must be numeric');
+            throw new Exception('$Speed must be numeric');
         }
 
         $this->cwSpeed = $speed;
         return $this;
     }
 
-    public function setSampleRate($rate) {
+	/**
+	 * @throws Exception
+	 */
+	public function setSampleRate($rate) {
         if (!is_numeric($rate)) {
-            throw new \Exception('Sample rate must be numeric');
+            throw new Exception('Sample rate must be numeric');
         }
 
         $this->sampleRate = $rate;
         return $this;
     }
 
-    public function setFrequency($frequency) {
+	/**
+	 * @throws Exception
+	 */
+	public function setFrequency($frequency) {
         if (!is_numeric($frequency)) {
-            throw new \Exception('Frequency must be numeric');
+            throw new Exception('Frequency must be numeric');
         }
 
         $this->frequency = $frequency;
@@ -64,35 +85,33 @@ class Wav {
         $this->toneTime = 1.0 / $this->frequency; // sec per wavelength
         if ($this->cwSpeed < 15) {
             // use Farnsworth spacing
-            $this->ditTime = 1.145 / 15.0;
-            $this->charsPc = 122.5 / $this->cwSpeed - 31.0 / 6.0;
+            $ditTime = 1.145 / 15.0;
+            $charsPc = 122.5 / $this->cwSpeed - 31.0 / 6.0;
         } else {
-            $this->ditTime = 1.145 / $this->cwSpeed;
-            $this->charsPc = 3;
+            $ditTime = 1.145 / $this->cwSpeed;
+            $charsPc = 3;
         }
 
-        $this->wordsPc = floor(2 * $this->charsPc + 0.5);
-        $this->dahTime = 3 * $this->ditTime;
+        $wordsPc = floor(2 * $charsPc + 0.5);
         $this->sampleDt = 1.0 / $this->sampleRate;
         $this->phase = 0;
         $this->dPhase = 0;
-        $this->slash = false;
 
         $this->oscReset();
 
         $dit = 0;
-        while ($dit < $this->ditTime) {
+        while ($dit < $ditTime) {
             $x = $this->osc();
             // The dit and dah sound both rise during the first half dit-time
-            if ($dit < (0.5 * $this->ditTime)) {
-                $x = $x * sin((pi() / 2.0) * $dit / (0.5 * $this->ditTime));
+            if ($dit < (0.5 * $ditTime)) {
+                $x = $x * sin((pi() / 2.0) * $dit / (0.5 * $ditTime));
                 $this->bytes[self::DIT] .= chr(floor(120 * $x + 128));
                 $this->bytes[self::DAH] .= chr(floor(120 * $x + 128));
-            } else if ($dit > (0.5 * $this->ditTime)) {
+            } else if ($dit > (0.5 * $ditTime)) {
                 // During the second half dit-time, the dit sound decays
                 // but the dah sound stays constant
                 $this->bytes[self::DAH] .= chr(floor(120 * $x + 128));
-                $x = $x * sin((pi() / 2.0) * ($this->ditTime - $dit) / (0.5 * $this->ditTime));
+                $x = $x * sin((pi() / 2.0) * ($ditTime - $dit) / (0.5 * $ditTime));
                 $this->bytes[self::DIT] .= chr(floor(120 * $x + 128));
             } else {
                 $this->bytes[self::DIT] .= chr(floor(120 * $x + 128));
@@ -102,10 +121,10 @@ class Wav {
             $dit += $this->sampleDt;
         }
 
-        // At this point the dit ans space sound have been generated
+        // At this point the dit and space sound have been generated
         // During the next dit-time, the dah sound amplitude is constant
         $dit = 0;
-        while ($dit < $this->ditTime) {
+        while ($dit < $ditTime) {
             $x = $this->osc();
             $this->bytes[self::DAH] .= chr(floor(120 * $x + 128));
             $dit += $this->sampleDt;
@@ -114,14 +133,12 @@ class Wav {
         // During the 3rd dit-time, the dah-sound has a constant amplitude
         // then decays during that last half dit-time
         $dit = 0;
-        while ($dit < $this->ditTime) {
+        while ($dit < $ditTime) {
             $x = $this->osc();
-            if ($dit > (0.5 * $this->ditTime)) {
-                $x = $x * sin((pi() / 2.0) * ($this->ditTime - $dit) / (0.5 * $this->ditTime));
-                $this->bytes[self::DAH] .= chr(floor(120 * $x + 128));
-            } else {
-                $this->bytes[self::DAH] .= chr(floor(120 * $x + 128));
+            if ($dit > (0.5 * $ditTime)) {
+                $x = $x * sin((pi() / 2.0) * ($ditTime - $dit) / (0.5 * $ditTime));
             }
+            $this->bytes[self::DAH] .= chr(floor(120 * $x + 128));
             $dit += $this->sampleDt;
         }
 
@@ -130,14 +147,12 @@ class Wav {
         $sound = '';
         for ($i = 0; $i < strlen($text); $i++) {
             if ($text[$i] == ' ') {
-                for ($j = 0; $j < $this->wordsPc; $j++) {
-                    $sound .= $this->bytes[self::SPC];
-                }
+				$sound .= str_repeat($this->bytes[ self::SPC ], $wordsPc);
             } else if (isset($this->timingCodes[$text[$i]])) {
-                $xchar = $this->timingCodes[$text[$i]];
+                $xChar = $this->timingCodes[$text[$i]];
 
-                for ($k = 0; $k < strlen($xchar); $k++) {
-                    if ($xchar[$k] == '0') {
+                for ($k = 0; $k < strlen($xChar); $k++) {
+                    if ($xChar[$k] == '0') {
                         $sound .= $this->bytes[self::DIT];
                     } else {
                         $sound .= $this->bytes[self::DAH];
@@ -145,16 +160,13 @@ class Wav {
                     $sound .= $this->bytes[self::SPC];
                 }
 
-                for ($j = 1; $j < $this->charsPc; $j++) {
+                for ($j = 1; $j < $charsPc; $j++) {
                     $sound .= $this->bytes[self::SPC];
                 }
             }
         }
 
         $n = strlen($sound);
-        for ($i = 0; $i < $n; $i++) {
-            $x = ord($sound[$i]);
-        }
 
         // Write out the WAVE file
         $x = $n + 32;
@@ -192,15 +204,15 @@ class Wav {
 
     private function osc() {
         $this->phase += $this->dPhase;
-        if ($this->phase >= $this->twopi) {
-            $this->phase -= $this->twopi;
+        if ($this->phase >= $this->tau) {
+            $this->phase -= $this->tau;
         }
         return sin($this->phase);
     }
 
     private function oscReset() {
         $this->phase = 0;
-        $this->dPhase = $this->twopi * $this->sampleDt / $this->toneTime;
+        $this->dPhase = $this->tau * $this->sampleDt / $this->toneTime;
     }
 
     private function reset() {
